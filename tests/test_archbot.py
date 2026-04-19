@@ -12,7 +12,7 @@ class ArchBotTests(unittest.TestCase):
         self.assertIn("Arch Wi-Fi troubleshooting", response)
         self.assertIn("wiki.archlinux.org", response)
 
-    def test_disk_request_runs_allowlisted_command(self) -> None:
+    def test_disk_and_storage_requests_run_allowlisted_command(self) -> None:
         captured: list[Sequence[str]] = []
 
         def fake_executor(command: Sequence[str]) -> CompletedProcess[str]:
@@ -20,9 +20,11 @@ class ArchBotTests(unittest.TestCase):
             return CompletedProcess(command, 0, stdout="Filesystem data", stderr="")
 
         bot = ArchBot(executor=fake_executor)
-        response = bot.respond("check disk usage")
-        self.assertEqual(captured, [("df", "-h")])
-        self.assertIn("Filesystem data", response)
+        response_disk = bot.respond("check disk usage")
+        response_storage = bot.respond("show storage usage")
+        self.assertEqual(captured, [("df", "-h"), ("df", "-h")])
+        self.assertIn("Filesystem data", response_disk)
+        self.assertIn("Filesystem data", response_storage)
 
     def test_command_failure_is_reported(self) -> None:
         def fake_executor(command: Sequence[str]) -> CompletedProcess[str]:
