@@ -1,5 +1,6 @@
 import unittest
 from subprocess import CompletedProcess
+from typing import Sequence
 
 from archbot import ArchBot
 
@@ -12,9 +13,9 @@ class ArchBotTests(unittest.TestCase):
         self.assertIn("wiki.archlinux.org", response)
 
     def test_disk_request_runs_allowlisted_command(self) -> None:
-        captured: list[tuple[str, ...]] = []
+        captured: list[Sequence[str]] = []
 
-        def fake_executor(command: tuple[str, ...]) -> CompletedProcess[str]:
+        def fake_executor(command: Sequence[str]) -> CompletedProcess[str]:
             captured.append(command)
             return CompletedProcess(command, 0, stdout="Filesystem data", stderr="")
 
@@ -24,7 +25,7 @@ class ArchBotTests(unittest.TestCase):
         self.assertIn("Filesystem data", response)
 
     def test_command_failure_is_reported(self) -> None:
-        def fake_executor(command: tuple[str, ...]) -> CompletedProcess[str]:
+        def fake_executor(command: Sequence[str]) -> CompletedProcess[str]:
             return CompletedProcess(command, 1, stdout="", stderr="permission denied")
 
         bot = ArchBot(executor=fake_executor)
