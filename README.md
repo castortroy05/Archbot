@@ -8,11 +8,11 @@ Archbot is a minimal Arch Linux troubleshooting chatbot prototype. It maps natur
 ## Run
 
 ```bash
-python /home/runner/work/Archbot/Archbot/archbot.py
+python archbot.py
 ```
 
 ## Test
 
 ```bash
-python -m unittest discover -s /home/runner/work/Archbot/Archbot/tests -v
+python -m unittest discover -s tests -v
 ```
